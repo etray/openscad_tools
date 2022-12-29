@@ -1,6 +1,6 @@
 
 
-tools.scad is a re-usable library that helps perform operations that are challenging in Openscad
+tools.scad is a compact, re-usable library to help perform operations that are challenging in Openscad
 
 For example:
 
@@ -9,10 +9,10 @@ For example:
 - involute gears
 
 
-See demo folder for examples:
+See demo folder for more detail:
 
-![alt text](https://github.com/etray/openscad_tools/blob/master/Images/fasteners.png?raw=true "Fasteners")
+![Fasteners](https://raw.githubusercontent.com/etray/openscad_tools/main/Images/fasteners.png?raw=true "Fasteners")
 
-![alt text](https://github.com/etray/openscad_tools/blob/master/Images/curves.png?raw=true "Curves")
+![Curves](https://github.com/etray/openscad_tools/blob/main/Images/curves.png?raw=true "Curves")
 
-![alt text](https://github.com/etray/openscad_tools/blob/master/Images/gears.png?raw=true "Gears")
+![Gears](https://github.com/etray/openscad_tools/blob/main/Images/gears.png?raw=true "Gears")
