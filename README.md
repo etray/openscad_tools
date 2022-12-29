@@ -1,6 +1,6 @@
 
 
-tools.scad is a re-usable library to help perform operations that are challenging in Openscad
+tools.scad is a compact, re-usable library to help perform operations that are challenging in Openscad
 
 For example:
 
