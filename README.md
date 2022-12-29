@@ -9,7 +9,7 @@ For example:
 - involute gears
 
 
-See demo folder for examples:
+See demo folder for more detail:
 
 ![Fasteners](https://raw.githubusercontent.com/etray/openscad_tools/main/Images/fasteners.png?raw=true "Fasteners")
 
