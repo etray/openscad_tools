@@ -16,3 +16,5 @@ See demo folder for more detail:
 ![Curves](https://github.com/etray/openscad_tools/blob/main/Images/curves.png?raw=true "Curves")
 
 ![Gears](https://github.com/etray/openscad_tools/blob/main/Images/gears.png?raw=true "Gears")
+
+![Gears](https://github.com/etray/openscad_tools/blob/main/Images/threadTypes.png?raw=true "Thread Types")
