@@ -7,8 +7,18 @@
 //
 
 
-// generic smoothing parameters saves specifying every time
+// $fa - minimum angular division of a round object, resulting in (360/$fa) 
+// facets. Smaller is smoother. Larger is faster.
+
 $fa = 4;
+
+// $fs - minimum size (in mm) of a facet of a round object. 
+// If the facet resulting from by $fa is bigger, this value has no effect.
+// If the facet is smaller, then the angular $fa value is ignored in favor of 
+// this dimensional value. The only reason to set $fs seems to be to save
+// cycles rendering fine details with unnecessary resolution? Here we override
+// the default (2mm?), since that seems a bit coarse.
+
 $fs = 0.5;
 
 
@@ -575,7 +585,78 @@ module thread(major_diameter, thread_pitch, thread_length, thread_angle, thread_
 
 module acme_cutter(thread_pitch, thread_angle, major_diameter)
 {
-   // TODO:
+    // depth it would be if this were not an acme thread
+    //    \
+    //    /
+    //   /
+    //   \
+    //    \
+    //    /
+    //  |-d-|
+    ideal_depth=((thread_pitch/2.0)/tan(thread_angle/2.0));
+
+    // acme thread depth (ideally 1/3 ?)
+    //    \
+    //     |
+    //    /
+    //   |   
+    //    \
+    //     |
+    //    /
+    //  |-d-|      
+    acme_depth=ideal_depth/3;
+
+    // distance between ideal peak and flat top of acme thread
+    //
+    //     /
+    //   /|
+    //  < | 
+    //   \|
+    //     \
+    //  |d|
+    flat_offset = (ideal_depth-acme_depth)/2;
+
+    // calculate y position for inner thread edge
+    c_y=tan(thread_angle/2) * ((ideal_depth-flat_offset)-flat_offset);
+
+    translate([major_diameter/2.0, 0, 0])
+    polygon(
+        //   Here we alter the ideal (non-acme) profile
+        //
+        //       B + - + A 
+        //        /    |
+        //    C +      |
+        //        \    |
+        //       D + - + E
+        //
+        //    shifting the cutter by (flat_offset) so the stock surface 
+        //    becomes the outer flat top of the thread
+        //
+        //    ---->
+        //
+        //    then blunting the cutter, creating 2 new points,
+        //    c1 and c2, defining the inner flat bottom of the thread
+        //
+        //         B + - + A 
+        //          /    |
+        //      C1 +     |
+        //      C2 +     |
+        //          \    |
+        //         D + - + E
+        //
+        points=
+        [
+            [(thread_pitch/2)+(flat_offset),thread_pitch/2.0],    // A
+            [0+(flat_offset),thread_pitch/2.0],                   // B
+            
+            [(-((ideal_depth - flat_offset)-flat_offset)),+(c_y)],// C1
+            [(-((ideal_depth - flat_offset)-flat_offset)),-(c_y)],// C2
+            
+            [0+(flat_offset),-(thread_pitch/2.0)],                // D 
+            [(thread_pitch/2)+(flat_offset),-(thread_pitch/2.0)]  // E
+        ], 
+        paths=[[0,1,2,3,4,5,0]]
+    );
 }
 
 
