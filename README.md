@@ -17,4 +17,4 @@ See demo folder for more detail:
 
 ![Gears](https://github.com/etray/openscad_tools/blob/main/Images/gears.png?raw=true "Gears")
 
-![Gears](https://github.com/etray/openscad_tools/blob/main/Images/threadTypes.png?raw=true "Thread Types")
+![Gears](https://github.com/etray/openscad_tools/blob/main/Images/threadTypes.PNG?raw=true "Thread Types")
