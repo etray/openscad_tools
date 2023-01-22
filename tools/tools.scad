@@ -35,8 +35,10 @@ function e()  = 2.718281828459045;
 // imperial to metric
 mm_per_in=25.4;
 function inToMm(in) = (in * mm_per_in);
+
 // Threads per inch to mm thread pitch
 function tpiToTp(tpi) = inToMm(1/tpi);
+
 
 // overrideable scale factor
 pla_shrink_scale=1.008;
@@ -74,7 +76,6 @@ module tube(tube_outer_diameter, tube_inner_diameter, tube_length)
         cylinder(h=tube_length+1,d=tube_inner_diameter,center=true);
     }
 }
-
 
 
 module outer_chamfer_ring(diameter, distance)
@@ -192,6 +193,55 @@ module drillHole(diameter, depth, x, y, z)
         
         translate([x,y,z-(depth/2)])
         cylinder(d=diameter,h=depth,center=true);
+    }
+}
+
+// Through-hole profile, including chamfering.
+//
+// - Chamfering avoids fit problems caused by "elephant's foot".
+// - Good for wheel hubs.
+// - Assumes material is centered on the x/y plane.
+// - Depth of zero is equivalent to no chamfer.
+// - Depth is the length of a side of the 45 degree triangle,
+//   desribing the profile of the material that would be removed.
+//
+//      |  D  |
+//   -   _ _ _ _ _ 
+//      |_|  .
+//   D  |  .
+//   _  |.
+//      |
+//
+module chamferedThroughHole(holeDiameter, materialThickness, chamferDepth)
+{
+    module upInnerCone(diameter,chamferDepth,startZ)
+    {
+        coneDiameter=diameter*3;
+        coneHeight=coneDiameter/2;
+
+        translate([0,0,-(coneHeight/2)+((diameter+chamferDepth)/2)+startZ])
+        cylinder(d1=coneDiameter,d2=0.01,h=coneHeight,center=true, $fs = 2);
+    }
+
+    module downInnerCone(diameter,chamferDepth,startZ)
+    {
+        coneDiameter=diameter*3;
+        coneHeight=coneDiameter/2;
+
+        translate([0,0,(coneHeight/2)-((diameter+chamferDepth)/2)+startZ])
+        cylinder(d2=coneDiameter,d1=0.01,h=coneHeight,center=true, $fs = 2);
+    }
+
+    difference()
+    {
+        children();
+
+        group()
+        {
+            downInnerCone(holeDiameter,chamferDepth,(materialThickness/2));
+            cylinder(d=holeDiameter,h=materialThickness*2,center=true);
+            upInnerCone(holeDiameter,chamferDepth,-(materialThickness/2));
+        }
     }
 }
 
@@ -801,8 +851,10 @@ module gearFitFixture(axle_diameter, distance, axle_height)
 function pointDistance(x1,y1,z1,x2,y2,z2)=
     sqrt(pow(x2-x1,2) + pow(y2-y1,2) + pow(z2-z1,2));
 
-// factor to lengthen segments, to fill in gaps
-//segmentExtendFactor=0.25;
+// user-suppliable factor to lengthen segments, to fill in gaps
+// segmentExtendFactor=0.25;
+
+defaultSegmentExtendFactor=0.25;
 
 // extrudes a 2-d shape between two points,
 // matching the direction and orientation of
@@ -817,7 +869,8 @@ module extrudeBetween(x1,y1,z1,x2,y2,z2)
     y2_diff=((y2-y1)!=0?(y2-y1):0.00001);   
     z2_diff=((z2-z1)!=0?(z2-z1):0.00001);
 
-    
+    extendFactor=(default(segmentExtendFactor, defaultSegmentExtendFactor));
+
     // first, the y rotation gets us to the z height
     // of our final position
     
@@ -894,7 +947,7 @@ module extrudeBetween(x1,y1,z1,x2,y2,z2)
     group()
     {
         translate([0,0,distance/2])
-        linear_extrude(height = distance*(1+segmentExtendFactor), center = true)
+        linear_extrude(height = distance*(1+extendFactor), center = true)
         children();
     }
 }

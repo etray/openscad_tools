@@ -15,16 +15,17 @@ gear_module=1;
 pressure_angle=20;
 
 thickness=3;
+clearance = 0.5;
+hubDiameter= 5 + clearance;
+chamferDepth=0.5;
 
-
-// Easy, single-method gear creation
-drillHole(5, 5, 0, 0, 3)
-gear(tooth_count1, gear_module, pressure_angle, thickness);
+chamferedThroughHole(hubDiameter, thickness, chamferDepth)
+    gear(tooth_count1, gear_module, pressure_angle, thickness);
 
 // Handy function uses math to eliminate
 // guesswork from spacing gears to run smoothly
 gear_spacing=gearSpacing(tooth_count1, tooth_count2, gear_module);
 
-drillHole(5, 5, 0, gear_spacing, 3)
 translate([0,gear_spacing,0])
-gear(tooth_count2, gear_module, pressure_angle, thickness);
+chamferedThroughHole(hubDiameter, thickness, chamferDepth)
+    gear(tooth_count2, gear_module, pressure_angle, thickness);
